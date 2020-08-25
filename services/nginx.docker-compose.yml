@@ -60,7 +60,6 @@ services:
         volumes:
             - ../data/influxdb:/var/lib/influxdb
     grafana:
-        container_name: Grafana
         image: grafana/grafana:latest
         restart: unless-stopped
         links:
