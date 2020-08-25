@@ -26,7 +26,7 @@ First, you will need to install docker and docker compose on your system, and th
 
 ```bash
 ./create.sh
-docker-compose up -d
+./run.sh
 ```
 
 to create the final docker compose configuration file and run it.
