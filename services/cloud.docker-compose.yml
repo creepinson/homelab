@@ -1,0 +1,16 @@
+version: "3"
+services:
+    dashboard:
+        image: linuxserver/heimdall
+        container_name: heimdall
+        volumes:
+            - ../data/heimdall:/config
+        ports:
+            - "8002:80"
+        restart: unless-stopped
+    cloud:
+        image: nextcloud
+        ports:
+            - "8004:80"
+        volumes:
+            - ../data/cloud/html:/var/www/html

@@ -1,0 +1,49 @@
+{
+    containers: [
+        {
+            name: "db",
+            image: "mysql:latest",
+            environment: "../.env.json5",
+            ports: {
+                "3306": 3306,
+            },
+            volumes: {
+                "../data/db": {
+                    bind: "/var/lib/mysql",
+                },
+            },
+        },
+        {
+            name: "pma",
+            image: "phpmyadmin/phpmyadmin:latest",
+            environment: {
+                PMA_HOST: "stack_nginx_cloud_db",
+                PMA_ARBITRARY: 1,
+            },
+            links: ["stack_nginx_cloud_db"],
+            ports: {
+                "80": 8081,
+            },
+        },
+        {
+            name: "proxy",
+            image: "jc21/nginx-proxy-manager:latest",
+            ports: {
+                "80": 80,
+                "81": 81,
+            },
+            links: ["stack_nginx_cloud_db"],
+            volumes: {
+                "../data/proxy/config": {
+                    bind: "/app/config",
+                },
+                "../data/proxy/data": {
+                    bind: "/data",
+                },
+                "../data/proxy/letsencrypt": {
+                    bind: "/etc/letsencrypt",
+                },
+            },
+        },
+    ],
+}

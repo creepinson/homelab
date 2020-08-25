@@ -1,0 +1,73 @@
+version: "3"
+services:
+    db:
+        image: mysql:latest
+        container_name: db
+        command: --default-authentication-plugin=mysql_native_password
+        restart: unless-stopped
+        env_file: ../.env
+        ports:
+            - "3306:3306"
+        volumes:
+            - ../data/db:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: pma
+        links:
+            - db
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: unless-stopped
+        ports:
+            - 8081:80
+    proxy:
+        image: jc21/nginx-proxy-manager:latest
+        restart: unless-stopped
+        ports:
+            # Public HTTP Port:
+            - "80:80"
+            # Admin Web Port:
+            - "81:81"
+        volumes:
+            # Make sure this config.json file exists as per instructions above:
+            - ../data/proxy/config:/app/config
+            - ../data/proxy/data:/data
+            - ../data/proxy/letsencrypt:/etc/letsencrypt
+        environment:
+            DISABLE_IPV6: "true"
+        links:
+            - db
+    throw-out-error-wp:
+        image: wordpress
+        links:
+            - db
+        env_file: ../.env
+        environment:
+            WORDPRESS_DB_NAME: "throw-out-wp"
+        ports:
+            - "8000:80"
+        volumes:
+            - ../data/throw-out-error-wp/html:/var/www/html
+    influxdb:
+        container_name: influxdb
+        image: influxdb:latest
+        restart: unless-stopped
+        ports:
+            - 8083:8083
+            - 8086:8086
+        volumes:
+            - ../data/influxdb:/var/lib/influxdb
+    grafana:
+        container_name: Grafana
+        image: grafana/grafana:latest
+        restart: unless-stopped
+        links:
+            - influxdb
+        ports:
+            - 3000:3000
+        depends_on:
+            - influxdb
+        volumes:
+            - ../data/grafana:/var/lib/grafana

@@ -1,0 +1,28 @@
+{
+    containers: [
+        {
+            name: "dashboard",
+            image: "linuxserver/heimdall:latest",
+            volumes: {
+                "../data/heimdall": {
+                    bind: "/config",
+                },
+            },
+            ports: {
+                "80": 8002,
+            },
+        },
+        {
+            name: "cloud",
+            image: "nextcloud:latest",
+            volumes: {
+                "../data/cloud/html": {
+                    bind: "/var/www/html",
+                },
+            },
+            ports: {
+                "80": 8004,
+            },
+        },
+    ],
+}
