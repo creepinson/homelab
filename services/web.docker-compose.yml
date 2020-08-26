@@ -29,7 +29,8 @@ services:
             - "80:80"
             - "10000:10000"
         volumes:
-            - ../data/http:/usr/local/apache2
+            - ../data/http/conf:/usr/local/apache2/conf
+            - ../data/http/www:/usr/local/apache2/htdocs
         env_file: ../.env
     throw-out-error-wp:
         image: wordpress
