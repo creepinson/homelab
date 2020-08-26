@@ -37,7 +37,7 @@ ADD run.sh /usr/local/apachegui/ApacheGUI/bin/run.sh
 RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >>$HOME/.bashrc
 RUN chmod 777 -R /usr/local
 
-ENTRYPOINT rc-service apache2 start \
+CMD rc-service apache2 start \
     && sudo -S rc-service ssh start \
     && /usr/local/apachegui/ApacheGUI/bin/run.sh \
     && tail -f /dev/null
