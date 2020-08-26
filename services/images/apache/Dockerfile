@@ -35,6 +35,7 @@ ADD run.sh /usr/local/apachegui/ApacheGUI/bin/run.sh
 
 # Add a standard user for later and open permissions to the needed directories
 RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >>$HOME/.bashrc
+RUN chmod 777 -R /usr/local
 
 CMD rc-service apache2 start \
     && sudo -S rc-service ssh start \
