@@ -1,7 +1,7 @@
 #  Credit for this image goes to https://github.com/craigthackerx/infrac-stak
 
 # Use Ubuntu or u dum dum
-FROM ubuntu:latest
+FROM httpd:latest
 
 #Set timezone
 ENV TIME_ZONE=US/Pacific
@@ -27,7 +27,6 @@ RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /
 
 # Install & update hings
 RUN apt-get update -y && apt-get -y install \ 
-    apache2 \
     bash \
     curl \
     git \
