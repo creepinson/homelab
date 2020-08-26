@@ -1,3 +1,4 @@
+# Webmin + httpd (apache2) dockerfile
 FROM httpd:latest
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=US/Pacific
