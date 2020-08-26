@@ -23,7 +23,7 @@ services:
         ports:
             - 8081:80
     http:
-        image: khartool/apache-gui-x64:latest
+        build: images/apache
         restart: unless-stopped
         ports:
             - "80:80"
