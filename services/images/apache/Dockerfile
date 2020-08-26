@@ -6,7 +6,7 @@ FROM httpd:latest
 #Set timezone
 ENV TIME_ZONE=US/Pacific
 
-#Set System Locale 
+#Set System Locale
 ENV LOCALE_CODE en_US.UTF-8
 
 # Set user for personal preference and password. These are used later on.
@@ -23,17 +23,19 @@ EXPOSE 80 443 9999
 SHELL ["/bin/bash", "-c"]
 
 # Set the timezone
-RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE >/etc/timezone
+
+RUN apt update -y && apt install -y software-properties-common \
+    && apt update -y && add-apt-repository ppa:ondrej/php
 
 # Install & update hings
-RUN apt-get update -y && apt-get -y install \ 
-    bash \
+RUN apt -y install \ 
+bash \
     curl \
     git \
     ifupdown \
     libapache2-mod-php7.4 \
-    mariadb-client\
-    mariadb-server \
+    mariadb-client mariadb-server \
     locales \
     nano \
     openjdk-8-jdk \
@@ -42,7 +44,6 @@ RUN apt-get update -y && apt-get -y install \
     php7.4 \
     php7.4-mysql \
     python \
-    software-properties-common \
     sudo \
     unzip \
     wget \
@@ -68,14 +69,14 @@ ADD run.sh /usr/local/apachegui/ApacheGUI/bin/run.sh
 RUN useradd -m -s /bin/bash $NORMAL_USER
 RUN usermod -aG sudo $NORMAL_USER
 RUN echo $NORMAL_USER:$USER_PASSWORD | chpasswd
-RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >> $HOME/.bashrc 
+RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >>$HOME/.bashrc
 RUN chmod 777 -R /usr/local
 
 ENTRYPOINT echo $USER_PASSWORD | sudo -S service apache2 start \
     && echo $USER_PASSWORD | sudo -S service ssh start \
     && /usr/local/apachegui/ApacheGUI/bin/run.sh \
-    && tail -f /dev/null 
+    && tail -f /dev/null
 
-# Change back to normal user 
+# Change back to normal user
 USER ${NORMAL_USER}
 WORKDIR ${HOME}
