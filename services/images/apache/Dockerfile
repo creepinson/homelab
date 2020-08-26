@@ -1,13 +1,15 @@
 FROM httpd:latest
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=US/Pacific
-
+ENV ROOT_PASSWORD=1234
 # Initial updates and install core utilities
 RUN apt-get update -qq -y \
     && apt-get upgrade -y \
     && apt-get install -y \
     wget \
     curl \
+    net-tools \
+    iproute2 \
     apt-transport-https \
     lsb-release \
     ca-certificates \
@@ -18,7 +20,7 @@ RUN apt-get update -qq -y \
 RUN dpkg-reconfigure locales
 
 # Install Webmin
-RUN echo root:password | chpasswd \
+RUN echo root:${ROOT_PASSWORD} | chpasswd \
     && echo "Acquire::GzipIndexes \"false\"; Acquire::CompressionTypes::Order:: \"gz\";" >/etc/apt/apt.conf.d/docker-gzip-indexes \
     && update-locale LANG=C.UTF-8 \
     && echo deb https://download.webmin.com/download/repository sarge contrib >>/etc/apt/sources.list \
