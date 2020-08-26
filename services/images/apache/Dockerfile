@@ -21,7 +21,8 @@ RUN apk add --no-cache \
     openssl \
     unzip \
     wget \
-    zip
+    zip \
+    openrc
 
 
 # Install Apache GUI - go to http://docker-ip:9999/ApacheGUI
@@ -36,7 +37,7 @@ ADD run.sh /usr/local/apachegui/ApacheGUI/bin/run.sh
 RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >>$HOME/.bashrc
 RUN chmod 777 -R /usr/local
 
-ENTRYPOINT service apache2 start \
-    && sudo -S service ssh start \
+ENTRYPOINT rc-service apache2 start \
+    && sudo -S rc-service ssh start \
     && /usr/local/apachegui/ApacheGUI/bin/run.sh \
     && tail -f /dev/null
