@@ -3,6 +3,12 @@
 # Use Ubuntu or u dum dum
 FROM ubuntu:latest
 
+#Set timezone
+ENV TIME_ZONE=US/Pacific
+
+#Set System Locale 
+ENV LOCALE_CODE en_US.UTF-8
+
 # Set user for personal preference and password. These are used later on.
 ENV NORMAL_USER joe
 ENV USER_PASSWORD Sp00kyP4SS!
@@ -16,6 +22,9 @@ EXPOSE 80 443 9999
 # Use bash from now on
 SHELL ["/bin/bash", "-c"]
 
+# Set the timezone
+RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /etc/timezone
+
 # Install & update hings
 RUN apt-get update -y && apt-get -y install \ 
     apache2 \
@@ -26,6 +35,7 @@ RUN apt-get update -y && apt-get -y install \
     libapache2-mod-php7.4 \
     mariadb-client\
     mariadb-server \
+    locales \
     nano \
     openjdk-8-jdk \
     openssh-server \
@@ -38,6 +48,10 @@ RUN apt-get update -y && apt-get -y install \
     unzip \
     wget \
     zip
+
+# Add Locale
+RUN locale-gen $LOCALE_CODE
+RUN update-locale LANG=$LOCALE_CODE
 
 # Fix Systemctl because you forgot how to use SystemV
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl
