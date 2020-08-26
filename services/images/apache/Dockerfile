@@ -23,15 +23,15 @@ RUN apt-get update -y && apt-get -y install \
     curl \
     git \
     ifupdown \
-    libapache2-mod-php7.2 \
+    libapache2-mod-php7.4 \
     mariadb-client\
     mariadb-server \
     nano \
     openjdk-8-jdk \
     openssh-server \
     openssl \
-    php7.2 \
-    php7.2-mysql \
+    php7.4 \
+    php7.4-mysql \
     python \
     software-properties-common \
     sudo \
