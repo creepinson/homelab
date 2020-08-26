@@ -1,7 +1,7 @@
 #  Credit for this image goes to https://github.com/craigthackerx/infrac-stak
 
 # Use Ubuntu or u dum dum
-FROM httpd:latest
+FROM ubuntu:latest
 
 #Set timezone
 ENV TIME_ZONE=US/Pacific
@@ -15,6 +15,14 @@ ENV USER_PASSWORD Sp00kyP4SS!
 
 # Set home enviroment
 ENV HOME /home/$NORMAL_USER
+
+# Apache2
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_PID_FILE /var/run/apache2/apache2$SUFFIX.pid
+ENV APACHE_RUN_DIR /var/run/apache2$SUFFIX
+ENV APACHE_LOCK_DIR /var/lock/apache2$SUFFIX
+ENV APACHE_LOG_DIR /var/log/apache2$SUFFIX
 
 # Ports
 EXPOSE 80 443 9999
@@ -31,6 +39,7 @@ RUN apt update -y && apt install -y software-properties-common \
 # Install & update hings
 RUN apt -y install \ 
 bash \
+    apache2 \
     curl \
     git \
     ifupdown \
