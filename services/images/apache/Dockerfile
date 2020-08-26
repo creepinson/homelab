@@ -1,6 +1,6 @@
 FROM httpd:latest
 
-ENV DEBIAN_FRONTEND=noninteractive TZ=Europe/Amsterdam
+ENV DEBIAN_FRONTEND=noninteractive TZ=US/Pacific
 
 # Initial updates and install core utilities
 RUN apt-get update -qq -y \
