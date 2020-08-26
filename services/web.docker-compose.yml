@@ -27,7 +27,7 @@ services:
         restart: unless-stopped
         ports:
             - "80:80"
-            - "9999:9999"
+            - "10000:10000"
         volumes:
             - ../data/http/config:/etc/apache2
             - ../data/http/www:/var/www
