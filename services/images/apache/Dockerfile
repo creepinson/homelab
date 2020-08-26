@@ -1,90 +1,39 @@
-#  Credit for this image goes to https://github.com/craigthackerx/infrac-stak
+FROM httpd:latest
 
-# Use Ubuntu or u dum dum
-FROM ubuntu:latest
+ENV DEBIAN_FRONTEND=noninteractive TZ=Europe/Amsterdam
 
-#Set timezone
-ENV TIME_ZONE=US/Pacific
-
-#Set System Locale
-ENV LOCALE_CODE en_US.UTF-8
-
-# Set user for personal preference and password. These are used later on.
-ENV NORMAL_USER joe
-ENV USER_PASSWORD Sp00kyP4SS!
-
-# Set home enviroment
-ENV HOME /home/$NORMAL_USER
-
-# Apache2
-ENV APACHE_RUN_USER joe
-ENV APACHE_PID_FILE /var/run/apache2/apache2$SUFFIX.pid
-ENV APACHE_RUN_DIR /var/run/apache2$SUFFIX
-ENV APACHE_LOCK_DIR /var/lock/apache2$SUFFIX
-ENV APACHE_LOG_DIR /var/log/apache2$SUFFIX
-
-# Ports
-EXPOSE 80 443 9999
-
-# Use bash from now on
-SHELL ["/bin/bash", "-c"]
-
-# Set the timezone
-RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE >/etc/timezone
-
-RUN apt update -y && apt install -y software-properties-common \
-    && apt update -y && add-apt-repository ppa:ondrej/php
-
-# Install & update hings
-RUN apt -y install \ 
-bash \
-    apache2 \
-    curl \
-    git \
-    ifupdown \
-    libapache2-mod-php7.4 \
-    mariadb-client mariadb-server \
-    locales \
-    nano \
-    openjdk-8-jdk \
-    openssh-server \
-    openssl \
-    php7.4 \
-    php7.4-mysql \
-    python \
-    sudo \
-    unzip \
+# Initial updates and install core utilities
+RUN apt-get update -qq -y \
+    && apt-get upgrade -y \
+    && apt-get install -y \
     wget \
-    zip
+    curl \
+    apt-transport-https \
+    lsb-release \
+    ca-certificates \
+    gnupg2 \
+    software-properties-common \
+    locales \
+    cron
+RUN dpkg-reconfigure locales
 
-# Add Locale
-RUN locale-gen $LOCALE_CODE
-RUN update-locale LANG=$LOCALE_CODE
+# Install Webmin
+RUN echo root:password | chpasswd \
+    && echo "Acquire::GzipIndexes \"false\"; Acquire::CompressionTypes::Order:: \"gz\";" >/etc/apt/apt.conf.d/docker-gzip-indexes \
+    && update-locale LANG=C.UTF-8 \
+    && echo deb https://download.webmin.com/download/repository sarge contrib >>/etc/apt/sources.list \
+    && wget http://www.webmin.com/jcameron-key.asc \
+    && apt-key add jcameron-key.asc \
+    && apt-get update \
+    && apt-get install -y webmin \
+    && apt-get clean
 
-# Fix Systemctl because you forgot how to use SystemV
-RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl
-RUN chmod a+x /usr/local/bin/systemctl
+EXPOSE 10000
+ENV LC_ALL C.UTF-8
 
-# Install Apache GUI - go to http://docker-ip:9999/ApacheGUI
-RUN mkdir /usr/local/apachegui
-RUN cd /usr/local/apachegui \
-    && wget https://netactuate.dl.sourceforge.net/project/apachegui/1.12-Linux-Solaris-Mac/ApacheGUI-1.12.0.tar.gz \
-    && tar -xvzf ApacheGUI-1.12.0.tar.gz \
-    && rm *.tar.gz
-ADD run.sh /usr/local/apachegui/ApacheGUI/bin/run.sh
+WORKDIR /home
+RUN echo "#! /bin/bash" >entrypoint.sh \
+    && echo "sed -i 's;ssl=1;ssl=0;' /etc/webmin/miniserv.conf && systemctl enable cron && service webmin start && httpd-foreground" >>entrypoint.sh \
+    && chmod 755 entrypoint.sh
 
-# Add a standard user for later and open permissions to the needed directories
-RUN useradd -m -s /bin/bash $NORMAL_USER
-RUN usermod -aG sudo $NORMAL_USER
-RUN echo $NORMAL_USER:$USER_PASSWORD | chpasswd
-RUN echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >>$HOME/.bashrc
-RUN chmod 777 -R /usr/local
-
-ENTRYPOINT echo $USER_PASSWORD | sudo -S service apache2 start \
-    && echo $USER_PASSWORD | sudo -S service ssh start \
-    && /usr/local/apachegui/ApacheGUI/bin/run.sh \
-    && tail -f /dev/null
-
-# Change back to normal user
-USER ${NORMAL_USER}
-WORKDIR ${HOME}
+CMD /home/entrypoint.sh

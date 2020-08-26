@@ -14,3 +14,4 @@ services:
             - "8004:80"
         volumes:
             - ../data/cloud/html:/var/www/html
+    
