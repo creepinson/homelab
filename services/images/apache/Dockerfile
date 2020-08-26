@@ -7,17 +7,17 @@ ENV ROOT_PASSWORD=1234
 RUN apt-get update -qq -y \
     && apt-get upgrade -y \
     && apt-get install -y \
-    wget \
-    curl \
-    net-tools \
-    iproute2 \
-    apt-transport-https \
-    lsb-release \
-    ca-certificates \
-    gnupg2 \
-    software-properties-common \
-    locales \
-    cron
+        wget \
+        curl \
+        net-tools \
+        iproute2 \
+        apt-transport-https \
+        lsb-release \
+        ca-certificates \
+        gnupg2 \
+        software-properties-common \
+        locales \
+        cron
 RUN dpkg-reconfigure locales
 
 # Install Webmin
