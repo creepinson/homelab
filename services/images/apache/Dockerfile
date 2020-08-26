@@ -1,7 +1,7 @@
 FROM httpd:latest
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=US/Pacific
-ENV ROOT_PASSWORD=1234
+
 # Initial updates and install core utilities
 RUN apt-get update -qq -y \
     && apt-get upgrade -y \
