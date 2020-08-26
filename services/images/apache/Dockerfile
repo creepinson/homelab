@@ -34,8 +34,7 @@ EXPOSE 10000
 ENV LC_ALL C.UTF-8
 
 WORKDIR /home
-RUN echo "#! /bin/bash" >entrypoint.sh \
-    && echo "echo root:${ROOT_PASSWORD} | chpasswd && sed -i 's;ssl=1;ssl=0;' /etc/webmin/miniserv.conf && systemctl enable cron && service webmin start && httpd-foreground" >>entrypoint.sh \
-    && chmod 755 entrypoint.sh
+COPY entrypoint.sh /home/entrypoint.sh
+RUN chmod 755 entrypoint.sh
 
 CMD /home/entrypoint.sh
