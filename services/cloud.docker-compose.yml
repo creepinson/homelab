@@ -1,12 +1,11 @@
 version: "3"
 services:
     dashboard:
-        image: linuxserver/heimdall
-        container_name: heimdall
+        image: rmountjoy/dashmachine:latest
         volumes:
-            - ../data/heimdall:/config
+            - ../data/dashboard:/dashmachine/dashmachine/user_data
         ports:
-            - "8002:80"
+            - "8002:5000"
         restart: unless-stopped
     cloud:
         image: nextcloud
