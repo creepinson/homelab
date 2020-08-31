@@ -1,0 +1,38 @@
+verison: "3"
+services:
+    db:
+        image: mysql:latest
+        container_name: db
+        command: --default-authentication-plugin=mysql_native_password
+        restart: unless-stopped
+        env_file: ../.env
+        ports:
+            - "3306:3306"
+        volumes:
+            - ../data/db:/var/lib/mysql
+    cms:
+        image: agentejo/cockpit
+        ports:
+            - 8003:80
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: pma
+        links:
+            - db
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: unless-stopped
+        ports:
+            - 8081:80
+    portainer:
+        image: portainer/portainer:alpine
+        command: -H unix:///var/run/docker.sock
+        restart: unless-stopped
+        ports:
+            - 9000:9000
+            - 8000:8000
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ../data/portainer:/data

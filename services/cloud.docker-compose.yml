@@ -1,16 +1,19 @@
 version: "3"
 services:
-    dashboard:
-        image: rmountjoy/dashmachine:latest
-        volumes:
-            - ../data/dashboard:/dashmachine/dashmachine/user_data
-        ports:
-            - "8002:5000"
-        restart: unless-stopped
     cloud:
         image: nextcloud
         ports:
             - "8004:80"
         volumes:
             - ../data/cloud/html:/var/www/html
-    
+    throw-out-error-wp:
+        image: wordpress
+        links:
+            - db
+        env_file: ../.env
+        environment:
+            WORDPRESS_DB_NAME: "throw-out-wp"
+        ports:
+            - "8000:80"
+        volumes:
+            - ../data/throw-out-error-wp/html:/var/www/html
