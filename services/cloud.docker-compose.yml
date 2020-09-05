@@ -17,3 +17,9 @@ services:
             - "8000:80"
         volumes:
             - ../data/throw-out-error-wp/html:/var/www/html
+    repo:
+        image: dzikoysk/reposilite
+        ports:
+            - "8844:80"
+        volumes:
+            - ../data/repo:/app/data
