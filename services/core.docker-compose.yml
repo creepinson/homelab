@@ -12,7 +12,6 @@ services:
             - ../data/db:/var/lib/mysql
     nginx:
         image: jc21/nginx-proxy-manager:latest
-        restart: unless-stopped
         ports:
           # Public HTTP Port:
           - '80:80'
