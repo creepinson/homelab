@@ -10,7 +10,7 @@ services:
             - "3306:3306"
         volumes:
             - ../data/db:/var/lib/mysql
-     nginx:
+    nginx:
         image: jc21/nginx-proxy-manager:latest
         restart: unless-stopped
         ports:
