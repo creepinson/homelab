@@ -22,7 +22,7 @@ services:
           - '81:81'
         environment:
           # Uncomment this if IPv6 is not enabled on your host
-          # DISABLE_IPV6: 'true'
+            DISABLE_IPV6: 'true'
         volumes:
           # Make sure this config.json file exists as per instructions above:
           - ../data/proxy/config:/app/config
